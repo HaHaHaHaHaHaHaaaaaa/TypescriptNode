@@ -1,0 +1,12 @@
+extends layout
+block title 
+    title #{config ? config.app.domain :''}
+block headerContent
+    style.
+        h1{
+            border:1px solid orange;
+            color:#fff;
+        }
+
+block content
+    h1 Index Page

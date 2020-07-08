@@ -1,0 +1,22 @@
+doctype html
+html
+
+  head
+    block title
+
+    meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name="apple-mobile-web-app-status-bar-style", content="default")
+    meta(content='viewport-fit=cover,width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no', name='viewport')
+    meta(name='robots', content='index,follow')
+    meta(name='keywords', content=`${ config ? config.app.domain :''}`)
+    meta(name='description', content=``)
+    meta(http-equiv="x-dns-prefetch-control",content="on")
+    meta(http-equiv="X-UA-Compatible" ,content="IE=Edge")
+    meta(name="msapplication-tap-highlight", content="no")
+    link(rel='shortcut icon', href=config ? config.app.favico :'')
+    link(rel="stylesheet", href="/static/common.css")
+    script(src="/static/index.js")
+    block headerContent
+  body
+    block content
