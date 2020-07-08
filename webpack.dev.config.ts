@@ -11,7 +11,7 @@ const server:webpack.Configuration = {
   entry:['./bin/index.ts'],
   target: 'node',
   mode: 'development',
-  devtool:'#inline-source-map',
+  devtool:'inline-source-map',
   node: {
     // Need this when working with express, otherwise the build fails
     __dirname: false, // if you don't put this is, __dirname
@@ -53,7 +53,7 @@ const server:webpack.Configuration = {
     new CleanWebpackPlugin({
       // cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
     }),
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin({
         patterns:[
           {
@@ -80,7 +80,7 @@ const browser:webpack.Configuration = {
   entry:{index:'./src/public/static/js/index.js',common:'./src/public/static/css/common.css'},
   target:'web',
   mode: 'development',
-  devtool:'#inline-source-map',
+  devtool:'inline-source-map',
   node: {
     // Need this when working with express, otherwise the build fails
     __dirname: false, // if you don't put this is, __dirname
@@ -170,6 +170,6 @@ const browser:webpack.Configuration = {
   // externals: [nodeExternals()]
 }
 
-
+server.plugins.push(new webpack.HotModuleReplacementPlugin())
 
 export default [server,browser];

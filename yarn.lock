@@ -1087,6 +1087,14 @@
   dependencies:
     source-map "^0.6.1"
 
+"@types/webpack-hot-middleware@^2.25.3":
+  version "2.25.3"
+  resolved "https://registry.npm.taobao.org/@types/webpack-hot-middleware/download/@types/webpack-hot-middleware-2.25.3.tgz#ba6265ada359cae4f437d8ac08ac5b8c616f7521"
+  integrity sha1-umJlraNZyuT0N9isCKxbjGFvdSE=
+  dependencies:
+    "@types/connect" "*"
+    "@types/webpack" "*"
+
 "@types/webpack-node-externals@^1.7.1":
   version "1.7.1"
   resolved "https://registry.npm.taobao.org/@types/webpack-node-externals/download/@types/webpack-node-externals-1.7.1.tgz#73d0d7ae0e98cfbd69b7443388302cd69217494a"
