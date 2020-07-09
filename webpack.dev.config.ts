@@ -6,19 +6,21 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import OptimizeCSSAssetsPlugin  from 'optimize-css-assets-webpack-plugin';
+const hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true';
 
 const server:webpack.Configuration = {
-  entry:['./bin/index.ts'],
+  entry:{'main':['./server.ts']},
   target: 'node',
   mode: 'development',
-  devtool:'inline-source-map',
+  devtool:'eval-source-map',
+  watchOptions:{},
   node: {
     // Need this when working with express, otherwise the build fails
     __dirname: false, // if you don't put this is, __dirname
     __filename: false, // and __filename return blank or /
   },
   resolve: {
-    extensions: ['.ts'],
+    extensions: ['.ts','.js'],
   },
   output: {
     filename: '[name].js',
@@ -53,7 +55,7 @@ const server:webpack.Configuration = {
     new CleanWebpackPlugin({
       // cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
     }),
-    // new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin({
         patterns:[
           {
@@ -64,7 +66,7 @@ const server:webpack.Configuration = {
           {
             from: './src/views',
             to: 'src/views',
-            force:true
+            // force:true
           },          {
             from: './src/public/static/images',
             to: 'src/public/static/images',
@@ -74,13 +76,13 @@ const server:webpack.Configuration = {
     }),
 
   ],
-  externals: [nodeExternals()]
+  externals: [nodeExternals({whitelist:[]})]
 }
 const browser:webpack.Configuration = {
-  entry:{index:'./src/public/static/js/index.js',common:'./src/public/static/css/common.css'},
+  entry:{index:['./src/public/static/js/index.js'],common:['./src/public/static/css/common.css']},
   target:'web',
   mode: 'development',
-  devtool:'inline-source-map',
+  devtool:'eval-source-map',
   node: {
     // Need this when working with express, otherwise the build fails
     __dirname: false, // if you don't put this is, __dirname
@@ -112,15 +114,17 @@ const browser:webpack.Configuration = {
         test: /\.css$/,
         exclude: /(node_modules)/,
         use:[
+          'style-loader',
           {
             loader:MiniCssExtractPlugin.loader,
             options:{
               // publicPath: '',
-              hmr:process.env.NODE_ENV === 'development',
+              hmr:true,
               reloadAll:true
             },
           },
-          'css-loader'
+          'css-loader',
+
         ]
       }
     ],
@@ -169,7 +173,5 @@ const browser:webpack.Configuration = {
   ],
   // externals: [nodeExternals()]
 }
-
-server.plugins.push(new webpack.HotModuleReplacementPlugin())
 
 export default [server,browser];

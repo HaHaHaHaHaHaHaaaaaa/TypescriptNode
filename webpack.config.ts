@@ -8,7 +8,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import OptimizeCSSAssetsPlugin  from 'optimize-css-assets-webpack-plugin';
 
 const server:webpack.Configuration = {
-  entry:['./bin/index.ts'],
+  entry:{'main':['./server.ts']},
   target: 'node',
   mode: 'production',
   node: {
@@ -17,7 +17,7 @@ const server:webpack.Configuration = {
     __filename: false, // and __filename return blank or /
   },
   resolve: {
-    extensions: ['.ts'],
+    extensions: ['.ts','.js'],
   },
   output: {
     filename: '[name].js',
@@ -52,7 +52,6 @@ const server:webpack.Configuration = {
     new CleanWebpackPlugin({
       // cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin({
         patterns:[
           {
@@ -61,9 +60,14 @@ const server:webpack.Configuration = {
               // force:true
           },
           {
+            from: 'package.json',
+            to: 'package.json', 
+            // force:true
+        },
+          {
             from: './src/views',
             to: 'src/views',
-            force:true
+            // force:true
           },          {
             from: './src/public/static/images',
             to: 'src/public/static/images',
@@ -73,7 +77,8 @@ const server:webpack.Configuration = {
     }),
 
   ],
-  externals: [nodeExternals()]
+  externals: [nodeExternals({whitelist:[]})]
+
 }
 const browser:webpack.Configuration = {
   entry:{index:'./src/public/static/js/index.js',common:'./src/public/static/css/common.css'},
@@ -89,7 +94,7 @@ const browser:webpack.Configuration = {
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'src/public/build')
+    path: path.resolve(__dirname, './build')
   },
   module: {
     rules: [
@@ -110,6 +115,7 @@ const browser:webpack.Configuration = {
         test: /\.css$/,
         exclude: /(node_modules)/,
         use:[
+          'style-loader',
           {
             loader:MiniCssExtractPlugin.loader,
             options:{
@@ -155,7 +161,7 @@ const browser:webpack.Configuration = {
     },
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     // new CleanWebpackPlugin({
     //   cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
     // })

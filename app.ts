@@ -41,7 +41,9 @@ if (!prod) {
   app.use(webpackDevMiddleware(compiler,{
     noInfo: true, publicPath: serverWebpackConfig.output.path
   }));
-  app.use(webpackHotMiddleware(compiler))
+  app.use(webpackHotMiddleware(compiler,{
+    log:console.log,path:'/__webpack_hmr',heartbeat:20*1000
+  }))
 }
 
 

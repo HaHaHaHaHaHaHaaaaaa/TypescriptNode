@@ -3,12 +3,11 @@
  * Module dependencies.
  */
 
-import app from '../app';
+import app from './app';
 import debug from 'debug';
 import http = require('http');
-import config_F from '../src/vender/config';
+import config_F from './src/vender/config';
 const config = config_F.app;
-const isDebug= debug('nodesergames:server');
 /**
  * Get port from environment and store in Express.
  */
@@ -26,11 +25,15 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 server.listen(port);
+
+if (module.hot) {
+  module.hot.accept();
+  // module.hot.dispose(()=>server.close());
+}
+
+
 server.on('error', onError);
 server.on('listening', onListening);
-
-
-
 
 function normalizePort(val) {
   const _port = parseInt(val, 10);
@@ -81,5 +84,4 @@ function onListening() {
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-    isDebug('Listening on ' + bind);
 }
