@@ -52,9 +52,9 @@ const server:webpack.Configuration = {
 
   },
   plugins: [
-    new CleanWebpackPlugin({
-      // cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
-    }),
+    // new CleanWebpackPlugin({
+    //   // cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
+    // }),
     new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin({
         patterns:[
@@ -78,22 +78,66 @@ const server:webpack.Configuration = {
   ],
   externals: [nodeExternals({whitelist:[]})]
 }
-const browser:webpack.Configuration = {
-  entry:{index:['./src/public/static/js/index.js'],common:['./src/public/static/css/common.css']},
+const compileJs:webpack.Configuration = {
+  entry:{index:['./src/public/static/js/index.js']},
   target:'web',
   mode: 'development',
   devtool:'eval-source-map',
-  node: {
-    // Need this when working with express, otherwise the build fails
-    __dirname: false, // if you don't put this is, __dirname
-    __filename: false, // and __filename return blank or /
+  resolve: {
+    extensions: ['.js'],
   },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist/src/public/static/js')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use:[
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-transform-runtime']
+            }
+          }
+        ]
+      }
+    ],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i,
+        cache: true,
+        parallel: true,
+        terserOptions: {
+          output: {
+            comments: false
+          }
+        }
+      }),
+    ],
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+}
+
+const compileCss:webpack.Configuration = {
+  entry:{'common':['./src/public/static/css/common.css']},
+  target:'web',
+  mode: 'development',
+  devtool:'eval-source-map',
   resolve: {
     extensions: ['.js','.css'],
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'src/public/build')
+    path: path.resolve(__dirname, 'dist/src/public/static/css')
   },
   module: {
     rules: [
@@ -149,29 +193,20 @@ const browser:webpack.Configuration = {
       new OptimizeCSSAssetsPlugin({}),
       
     ],
-    splitChunks: {
-      cacheGroups: {
-        common: {
-          name: 'common',
-          test: /\.css$/,
-          chunks: 'all',
-          enforce: true,
-        },
-      },
-    },
+    // splitChunks: {
+    //   cacheGroups: {
+    //     common: {
+    //       name: 'common',
+    //       test: /\.css$/,
+    //       chunks: 'all',
+    //       enforce: true,
+    //     },
+    //   },
+    // },
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    // new CleanWebpackPlugin({
-    //   cleanOnceBeforeBuildPatterns: [path.join(__dirname, 'dist/**/*')]
-    // })
-    // new CopyWebpackPlugin({
-    //   patterns:[
-        
-    //   ]
-    // })
   ],
-  // externals: [nodeExternals()]
 }
 
-export default [server,browser];
+export default [server,compileJs,compileCss];

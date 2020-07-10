@@ -20,15 +20,17 @@ import config from './src/vender/config';
 import gamesRouter from './src/routes/routes';
 
 // const prod = process.env.NODE_ENV === 'production';
-const prod = config.app.production === 'production';
+const prod = (config.app.production || process.env.NODE_ENV) === 'production';
+const templateDir = path.join(__dirname,'src/views');
+const publicDir = path.join(__dirname,'src/public') ;
 
 const app = express();
 // view engine setup
-app.set('views', path.join(__dirname, 'src/views'));
+app.set('views', templateDir);
 app.set('view engine', 'pug');
 app.disable('x-powered-by');
 // app.set('etag',false);
-app.locals.basedir = path.join(__dirname, 'src/public');
+app.locals.basedir = publicDir;
 
 import webpackConfig from './webpack.dev.config';
 import webpackDevMiddleware from 'webpack-dev-middleware';
